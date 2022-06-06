@@ -12,7 +12,7 @@ import pandas as pd #reading excel file need xlrd==1.2.0; pip install xlrd==1.2.
 from argparse import ArgumentParser
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../core'))
 import bac
-能够读取cfg文件，为了适合结果找出bed文件的位置
+# 能够读取cfg文件，为了适合结果找出bed文件的位置
 def LibraryResult(match_table):
     """用于处理生信对接表的模块:
     1.单barcode非umi，link原始fastq文件到Rawdata下面

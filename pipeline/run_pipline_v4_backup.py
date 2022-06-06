@@ -13,7 +13,8 @@ from argparse import ArgumentParser
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../core'))
 import brc
 
-def versions(directory, keystring='parameter_configure_file'): 写入brc
+def versions(directory, keystring='parameter_configure_file'): 
+    # 写入brc
     """用于展示最新版本及判断历史版本信息"""
     allv_list=[]
     version_dict={}
@@ -91,14 +92,14 @@ if __name__ == '__main__':
                         help='running configure file; default=latest version')
     parser.add_argument('-v', '--version', default=None,
                         help='print the lateset version number; and other ')
-    目前需要的几个参数：
+    '''目前需要的几个参数：
         读取生信对接表match_table (match_table)
         分析功能选择all, isolate, trim, mapping, umi, QC, caller, fusion, cnv, msi等，选择对应选项后执行相应的分析
         读取配置文件的txt格式（存在一个默认的路径，默认选择最新版本，列举出所有版本信息）
         能够输出各个版本号及版本的信息内容
             加入单个样本从rawdata开始的分析过程的功能
         选择continue分析还是从头分析
-        选择local模式还是sge模式
+        选择local模式还是sge模式'''
     args = parser.parse_args()
     if args.version is not None:
         print (darui_pipeline_version_description.txt)
