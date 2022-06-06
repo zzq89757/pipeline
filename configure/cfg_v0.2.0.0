@@ -1,0 +1,87 @@
+//basic
+project = /data/ProjectRecord/Tumor/Panel/Pipeline
+command = ${project}/command
+version = ${command}/v0.2.0.0
+database = ${project}/database
+software = ${project}/software
+
+//language
+python = /data/software/bin/python
+perl = /usr/bin/perl
+Rscript = /data/software/bin/Rscript
+java = ${software}/jdk1.8.0_281/bin/java
+java_mem = 64
+
+//software
+cutadapt = ${software}/cutadapt-3.4/cutadapt-3.4
+bwa = ${software}/bwa-0.7.17/bwa
+samtools = ${software}/samtools-1.13/samtools
+picard = ${software}/picard-2.25.0.jar
+fgbio = ${software}/fgbio-1.3.0.jar
+gatk4 = ${software}/gatk-package-4.2.0.0-local.jar
+gatk3 = ${software}/GenomeAnalysisTK-3.8-1.jar
+lofreq = ${software}/lofreq-2.1.5/bin/lofreq
+bcftools = ${software}/bcftools-1.13/bcftools
+table_annovar = ${software}/annovar-2020.06.08/table_annovar.pl
+snpEff = ${software}/snpEff-5.0e/snpEff.jar
+SnpSift = ${software}/snpEff-5.0e/SnpSift.jar
+bowtie1 = ${software}/bowtie-1.3.0/bowtie
+whatshap = ${software}/whatshap-1.1/whatshap-1.1
+msisensor-pro = ${software}/msisensor-pro-1.2.0/binary/msisensor-pro
+gridss = ${software}/gridss-2.13.0/gridss_v0.2
+gridss_jar = ${software}/gridss-2.13.0/gridss-2.13.0-gridss-jar-with-dependencies.jar
+
+//database
+hg19_fa = ${database}/gatk-bundle-hg19/ucsc.hg19.fasta
+hg19_dict = ${database}/gatk-bundle-hg19/ucsc.hg19.dict
+hg19_2bit = ${database}/gatk-bundle-hg19/ucsc.hg19.2bit
+annovar_humandb = ${database}/annovar_humandb_hg19
+annovar_background = ${database}/annovar_background/
+1000G = ${database}/gatk-bundle-hg19/1000G_phase1.indels.hg19.sites.vcf
+Mills = ${database}/gatk-bundle-hg19/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf
+OMNI = ${database}/gatk-bundle-hg19/1000G_omni2.5.hg19.sites.vcf
+
+//parameter
+MGI_read1_adapter_sequence = AAGTCGGAGGCCAAGCGGTCTTAGGAAGACAAX
+MGI_read2_adapter_sequence = AAGTCGGATCGTAGCCATGTCGTTCTGTGAGCCAAGGAGTTGX
+MGI_SE_adapter_sequence = AAGTCGGAGGCCAAGCGGTCTTAGGAAGACAAX
+illumina_read1_adapter_sequence = AGATCGGAAGAGCACACGTCTGAACTCCAGTCACX
+illumina_read2_adapter_sequence = AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTX
+illumina_SE_adapter_sequence = AGATCGGAAGAGCACACGTCTGAACTCCAGTCACX
+bwa_threads = 16
+samtools_threads = 16
+gatk3_threads = 16
+duplex_fixUMI = ${version}/umi/duplex_fixUMI
+annovar_anno_db = refGene,cytoBand,cosmic92_coding,clinvar_20210123,avsnp150,exac03,ALL.sites.2015_08,EAS.sites.2015_08
+annovar_anno_operation = g,r,f,f,f,f,f,f
+cnv_gene_baseline = ${version}/cnv/baselines_files/NanOnco_Plus_Panel_v2.0_Covered_hg19_cnv_baseline_gene.txt
+cnv_bin_baseline = ${version}/cnv/baselines_files/NanOnco_Plus_Panel_v2.0_Covered_hg19_cnv_baseline_bin.txt
+msi_basline = ${version}/msi/nad_msi_sites.list_baseline
+fusion_bed = ${version}/fusion/hg19.ncbiRefSeq.all_CDS_longest_transcript_id_reverse_correct_add_intron.bed
+hotspot_cnv = ${version}/report/hotspot_cnv_gene_table.xls
+hotspot_snvindel = ${version}/report/hotspot_snvindel_COSMIC_with_sample.xls
+hotspot_fusion = ${version}/report/hotspot_fusion_gene_table.xls
+fusion_black_list_bed = ${software}/gridss-2.13.0/ENCFF001TDO.bed
+
+//scripts
+trim = ${version}/trim/run_trim_V0.2.1.0.py
+fastqqc = ${version}/qc/fastq_qc.py
+bamqc = ${version}/qc/bam_qc.py
+mapping = ${version}/mapping/run_mapping.py
+downsample = ${version}/mapping/bam_downsample.py
+rmdup = ${version}/mapping/run_rmdup.py
+indelrealigner = ${version}/mapping/run_indelrealigner.py
+umi = ${version}/umi/run_umi.py
+addRX = ${version}/umi/bam_add_RX.pl
+snvindel = ${version}/caller/run_snvindel_v0.2.1.0.py
+filter_to_pass = ${version}/caller/filter_to_pass.py
+merge_mnp = ${version}/caller/merge_mnp.py
+annotate = ${version}/annotation/run_annotate_v0.2.0.0.py
+diff_T_N_v1 = ${version}/annotation/bin/diff_T_N_v1.R
+make_background = ${version}/annotation/bin/make_background.R
+fusion = ${version}/fusion/run_fusion_gridss_v0.2.1.0.py
+cnv = ${version}/cnv/run_cnv_v0.2.0.0.py
+cnv_for_gene = ${version}/cnv/copy_number_detection_for_gene_v0.2.1.0.py
+cnv_for_bin = ${version}/cnv/copy_number_detection_for_bin_v0.2.1.0.py
+msi = ${version}/msi/run_msi_v0.2.1.0.py
+report = ${version}/report/report_result_v0.1.1.0.py

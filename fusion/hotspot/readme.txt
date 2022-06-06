@@ -1,0 +1,2 @@
+total.bed当中收录的大部分融合基因的信息，达瑞的纳昂达大panel中缺少3个基因AFF3,MIR548F1,SEPT14；
+融合分析得到的vcf信息通过annovar注释，最终确定基因位置；

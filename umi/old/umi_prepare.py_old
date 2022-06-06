@@ -1,0 +1,150 @@
+#coding:utf8
+#########################################################################
+# Author: ZZZ 
+# Created Time: 2021-10-15
+# Version: 0.2.0.0
+# Description: pipline for trim read mapping and add UMI sequence
+#########################################################################
+import os
+import sys
+import gzip
+import json
+import subprocess
+from argparse import ArgumentParser
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../core'))
+import brc
+
+def runningprocessing(cmd, output_dir, output_prefix, other_string):
+    (stdout, stderr, timer)=brc.run_command_with_return(cmd)
+    brc.export_log(cmd, stdout, stderr, timer, output_dir, output_prefix, other_string)
+
+def fileopen(filename): #file zip or not
+    try:
+        gzip.open(filename,'rb').readline()
+    except IOError:
+        return open(filename,'rb')
+    return gzip.open(filename,'rb')
+
+def check_file(trimmed_fq1, trimmed_fq2, umiseq_fq1, umiseq_fq2):
+    if not brc.check_file(trimmed_fq1) or not brc.check_file(trimmed_fq2) or not brc.check_file(umiseq_fq1) or not brc.check_file(umiseq_fq2):
+        print ("%s or %s or %s or %s not exist"%(trimmed_fq1, trimmed_fq2, umiseq_fq1, umiseq_fq2))
+        exit()
+    if brc.determainr1r2(trimmed_fq1, trimmed_fq2):
+        exit()
+    if brc.determainr1r2(umiseq_fq1, umiseq_fq2):
+        exit()
+
+def prepare(cfg_json, output_dir, output_prefix):
+    dirprefix = os.path.join(output_dir, output_prefix)
+    config=json.load(open(cfg_json,'r'))
+    bwa=config['software']['bwa']
+    bwa_threads=config['parameter']['bwa_threads']
+    # samtools=config['software']['samtools']
+    # samtools_threads=config['parameter']['samtools_threads']
+    hg19_fa=config['database']['hg19_fa']
+    return dirprefix, bwa, bwa_threads, hg19_fa
+
+def running(trimmed_fq1, trimmed_fq2, umiseq_fq1, umiseq_fq2, cfg_json, output_dir, output_prefix):
+    check_file(trimmed_fq1, trimmed_fq2, umiseq_fq1, umiseq_fq2)
+    (dirprefix, bwa, bwa_threads, hg19_fa) = prepare(cfg_json, output_dir, output_prefix)
+    # umiseq_fq1和umiseq_fq2当中有些read在trimmed_fq1和trimmed_fq2中没有，是在cutadapt这一步去掉了这些read信息，所以二者不是一一对应的；
+    # 所以这里选择的方法是建立一个存在read名称和tag标签的大的哈希表；虽然巨大的哈希表在调用key的时候会出错，但目前使用这个方法；（存在的问题）
+    RX_dict={}
+    for i,part in enumerate( zip_longest( os.popen('gunzip -c %s'umiseq_fq1), os.popen('gunzip -c %s'umiseq_fq2) ) ):
+        if i%4 == 0: #read
+            name=part[0].strip()[1:-2]
+            continue
+        elif 1%4 == 1: #seq
+            rx='RX:Z:'+part[0].strip()+'-'+part[1].strip()
+            RX_dict[name]=rx
+    cmd_mapping = " ".join([
+        bwa, 'mem -t %s -R'%bwa_threads,
+        "'@RG\\tID:%s\\tSM:%s\\tPL:MGI\\tLB:%s\\tPE:100'"%(output_prefix, output_prefix, output_prefix),
+        hg19_fa, trimmed_fq1, trimmed_fq2#,
+        # '|', samtools, 'sort -n --threads %s'%samtools_threads 用sort参数得到的samtools sort的中间文件会有read名称的重复
+    ]) #这里bwa mem不需要 -Y -M参数，一方面会出现多条read的比对结果，另一方面后面还会重新做比对；
+    bwa_process=subprocess.Popen(cmd_mapping, shell=True, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+    readname=''
+    #MQ:i:score Mapping quality of the mate/next segment.这里MQ给到的是其对应mate read的mapping quality，而不是他自己的mapping quality
+    # 这里要同时考虑到多种情况：
+    # 第一种，read1,read2；第二种，read1,read1,read2；第三种，read1,read2,read1,read2；第四种，read1，第五种，read2（后面两种对于的mate的MQ都是0）
+    samereads=[]
+    for line in bwa_process.stdout:
+        line=bytes.decode(line).strip()
+        if not line.startswith('@'): #body
+            flag=line.split('\t')[1]
+            mq='MQ:i:%s'%line.split('\t')[4]
+            if line.split('\t')[0] != readname:
+                for each in samereads:
+                    print (each)
+                samereads=[]
+                mqlist=['MQ:i:0','MQ:i:0']
+                if int(flag)%128 > 64: #判断为read1
+                    mqlist[0]=mq
+                elif int(flag)%128 < 64: #判断为read2
+                    mqlist[1]=mq
+                readname=bytes.decode(next(umi_r1)).strip()[1:-2]
+                next(umi_r2)
+                umi_r1_seq=bytes.decode(next(umi_r1)).strip()
+                umi_r2_seq=bytes.decode(next(umi_r2)).strip()
+                rx='RX:Z:%s-%s'%(umi_r1_seq, umi_r2_seq)
+                bam_str=line+'\t'+rx
+                for x in range(2):
+                    next(umi_r1)
+                    next(umi_r2)
+            else:
+                bam_str=line+'\t'+mq+'\t'+rx
+                print (bam_str)
+            ###旧方法
+            # if line.split('\t')[0] != readname:
+            #     readname=bytes.decode(next(umi_r1)).strip()[1:-2]
+            #     next(umi_r2)
+            #     umi_r1_seq=bytes.decode(next(umi_r1)).strip()
+            #     umi_r2_seq=bytes.decode(next(umi_r2)).strip()
+            #     rx='RX:Z:%s-%s'%(umi_r1_seq, umi_r2_seq)
+            #     bam_str=line+'\t'+mq+'\t'+rx
+            #     print (bam_str)
+            #     for x in range(2):
+            #         next(umi_r1)
+            #         next(umi_r2)
+            # else:
+            #     bam_str=line+'\t'+mq+'\t'+rx
+            #     print (bam_str)
+            ###旧方法
+        elif line.startswith('@'): #head
+            print (line)
+    for each in samereads: #bwa循环结束，在if line.split('\t')[0] != readname:判断条件下不能执行的，即bam文件的最后一条read也要输出；
+        print (each)
+
+if __name__ == '__main__':
+    parser = ArgumentParser('Doing mapping and add UMI sequence')
+    parser.add_argument('-f1', '--trimmed_fq1', required=True,
+                        help='trimmed fastq file read1')
+    parser.add_argument('-f2', '--trimmed_fq2', required=True,
+                        help='trimmed fastq file read2')
+    parser.add_argument('-m1', '--umiseq_fq1', required=True,
+                        help='umi fastq file read1')
+    parser.add_argument('-m2', '--umiseq_fq2', required=True,
+                        help='umi fastq file read2')
+    parser.add_argument('-c', '--cfg_json', required=True,
+                        help='"configure.file.json" file')
+    parser.add_argument('-o', '--output_dir', required=True,
+                        help='output directory')
+    parser.add_argument('-p', '--output_prefix', required=True,
+                        help='sample id')
+    args = parser.parse_args()
+    running(args.trimmed_fq1, args.trimmed_fq2, args.umiseq_fq1, args.umiseq_fq2, args.cfg_json, args.output_dir, args.output_prefix)
+
+# fastqfile
+# @F300004999L2C001R0020000001/1
+# TCGCTGTT
+# +
+# FFDFFFFF
+# zhounan@ngs-login:~/mission/KPI_assess_method_detect/deadline_October_pipline/real_sample_test_pipline2/umi$ zcat ../test.M2.fastq.gz |head -n 4
+# @F300004999L2C001R0020000001/2
+# TTTACGCA
+# +
+# GFFGGGGG
+# bamfile
+# F300004999L2C001R0020000001	99	chr3	178916507	60	91M	=	178916587	171	TTTTAACATATGTTTTCCTTCTTTGATTTAGGTTTCTGCTTTGGGACAACCATACATCTAATTCCTTAAAGTAGTTTTATATGTAAAACTT	EFFFFFFFFGFGEFFFFFFFFFFFFFFBFDFFEFFFFFFFFFFFFDFFFFFFFFFFFFFAGGFCFGFGFFFFFFFFFFCGFFGEGFFFFGF	MC:Z:91M	MD:Z:91	RG:Z:test	NM:i:0	MQ:i:60	AS:i:91	XS:i:20	RX:Z:TCGCTGTT-TTTACGCA
+# F300004999L2C001R0020000001	147	chr3	178916587	60	91M	=	178916507	-171	ATGTAAAACTTGCAAAGAATCAGAACAATGCCTCCACGACCATCATCAGGTGAACTGTGGGGCATCCACTTGATGCCCCCAAGAATCCTAG	FFFFFFF;GFFEFGFGGGF?FG@F?EFGG<GG8FFCFGFFEGDGGFGGGFF@FDGC@EFGGGGFBFGEGGFFGGFFGFGGFEGFFBFGEFG	MC:Z:91M	MD:Z:91	RG:Z:test	NM:i:0	MQ:i:60	AS:i:91	XS:i:0	RX:Z:TCGCTGTT-TTTACGCA

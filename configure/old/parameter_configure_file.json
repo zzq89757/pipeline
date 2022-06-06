@@ -1,0 +1,83 @@
+{
+  "basic": {
+    "project": "/data/ProjectRecord/Tumor/Panel/Pipeline",
+    "command": "/data/ProjectRecord/Tumor/Panel/Pipeline/command",
+    "version": "/data/ProjectRecord/Tumor/Panel/Pipeline/command/v0.2.0.0",
+    "database": "/data/ProjectRecord/Tumor/Panel/Pipeline/database",
+    "software": "/data/ProjectRecord/Tumor/Panel/Pipeline/software"
+  },
+  "language": {
+    "python": "/data/software/bin/python",
+    "perl": "/usr/bin/perl",
+    "Rscript": "/data/software/bin/Rscript",
+    "java": "/data/ProjectRecord/Tumor/Panel/Pipeline/software/jdk1.8.0_281/bin/java",
+    "java_mem": "64"
+  },
+  "software": {
+    "cutadapt": "/data/ProjectRecord/Tumor/Panel/Pipeline/software/cutadapt-3.4/cutadapt-3.4",
+    "bwa": "/data/ProjectRecord/Tumor/Panel/Pipeline/software/bwa-0.7.17/bwa",
+    "samtools": "/data/ProjectRecord/Tumor/Panel/Pipeline/software/samtools-1.13/samtools",
+    "picard": "/data/ProjectRecord/Tumor/Panel/Pipeline/software/picard-2.25.0.jar",
+    "fgbio": "/data/ProjectRecord/Tumor/Panel/Pipeline/software/fgbio-1.3.0.jar",
+    "gatk4": "/data/ProjectRecord/Tumor/Panel/Pipeline/software/gatk-package-4.2.0.0-local.jar",
+    "gatk3": "/data/ProjectRecord/Tumor/Panel/Pipeline/software/GenomeAnalysisTK-3.8-1.jar",
+    "lofreq": "/data/ProjectRecord/Tumor/Panel/Pipeline/software/lofreq-2.1.5/bin/lofreq",
+    "bcftools": "/data/ProjectRecord/Tumor/Panel/Pipeline/software/bcftools-1.13/bcftools",
+    "table_annovar": "/data/ProjectRecord/Tumor/Panel/Pipeline/software/annovar-2020.06.08/table_annovar.pl",
+    "snpEff": "/data/ProjectRecord/Tumor/Panel/Pipeline/software/snpEff-5.0e/snpEff.jar",
+    "SnpSift": "/data/ProjectRecord/Tumor/Panel/Pipeline/software/snpEff-5.0e/SnpSift.jar",
+    "bowtie1": "/data/ProjectRecord/Tumor/Panel/Pipeline/software/bowtie-1.3.0/bowtie",
+    "whatshap": "/data/ProjectRecord/Tumor/Panel/Pipeline/software/whatshap-1.1/whatshap-1.1",
+    "msisensor-pro": "/data/ProjectRecord/Tumor/Panel/Pipeline/software/msisensor-pro-1.2.0/binary/msisensor-pro",
+    "gridss": "/data/ProjectRecord/Tumor/Panel/Pipeline/software/gridss-2.13.0/gridss",
+    "gridss_jar": "/data/ProjectRecord/Tumor/Panel/Pipeline/software/gridss-2.13.0/gridss-2.13.0-gridss-jar-with-dependencies.jar"
+  },
+  "database": {
+    "hg19_fa": "/data/ProjectRecord/Tumor/Panel/Pipeline/database/gatk-bundle-hg19/ucsc.hg19.fasta",
+    "hg19_dict": "/data/ProjectRecord/Tumor/Panel/Pipeline/database/gatk-bundle-hg19/ucsc.hg19.dict",
+    "hg19_2bit": "/data/ProjectRecord/Tumor/Panel/Pipeline/database/gatk-bundle-hg19/ucsc.hg19.2bit",
+    "annovar_humandb": "/data/ProjectRecord/Tumor/Panel/Pipeline/database/annovar_humandb_hg19",
+    "annovar_background": "/data/ProjectRecord/Tumor/Panel/Pipeline/database/annovar_background/",
+    "1000G": "/data/ProjectRecord/Tumor/Panel/Pipeline/database/gatk-bundle-hg19/1000G_phase1.indels.hg19.sites.vcf",
+    "Mills": "/data/ProjectRecord/Tumor/Panel/Pipeline/database/gatk-bundle-hg19/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf",
+    "OMNI": "/data/ProjectRecord/Tumor/Panel/Pipeline/database/gatk-bundle-hg19/1000G_omni2.5.hg19.sites.vcf"
+  },
+  "parameter": {
+    "MGI_read1_adapter_sequence": "AAGTCGGAGGCCAAGCGGTCTTAGGAAGACAAX",
+    "MGI_read2_adapter_sequence": "AAGTCGGATCGTAGCCATGTCGTTCTGTGAGCCAAGGAGTTGX",
+    "MGI_SE_adapter_sequence": "AAGTCGGAGGCCAAGCGGTCTTAGGAAGACAAX",
+    "illumina_read1_adapter_sequence": "AGATCGGAAGAGCACACGTCTGAACTCCAGTCACX",
+    "illumina_read2_adapter_sequence": "AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTX",
+    "illumina_SE_adapter_sequence": "AGATCGGAAGAGCACACGTCTGAACTCCAGTCACX",
+    "bwa_threads": "16",
+    "samtools_threads": "16",
+    "gatk3_threads": "16",
+    "duplex_fixUMI": "/data/ProjectRecord/Tumor/Panel/Pipeline/command/v0.2.0.0/umi/duplex_fixUMI",
+    "annovar_anno_db": "refGene,cytoBand,cosmic92_coding,clinvar_20210123,avsnp150,exac03,ALL.sites.2015_08,EAS.sites.2015_08",
+    "annovar_anno_operation": "g,r,f,f,f,f,f,f",
+    "cnv_baseline": "/data/ProjectRecord/Tumor/Panel/Pipeline/command/v0.2.0.0/cnv/baselines_files/NanOnco_Plus_Panel_v2.0_Covered_hg19_cnv_baseline_v3.txt",
+    "msi_basline": "/data/ProjectRecord/Tumor/Panel/Pipeline/command/v0.2.0.0/msi/nad_msi_sites.list_baseline",
+    "fusion_bed": "/data/ProjectRecord/Tumor/Panel/Pipeline/command/v0.2.0.0/fusion/hg19.ncbiRefSeq.all_CDS_longest_transcript_id_reverse_correct_add_intron.bed",
+    "fusion_black_list_bed": "/data/ProjectRecord/Tumor/Panel/Pipeline/software/gridss-2.13.0/ENCFF001TDO.bed"
+  },
+  "scripts": {
+    "trim": "/data/ProjectRecord/Tumor/Panel/Pipeline/command/v0.2.0.0/trim/run_trim.py",
+    "fastqqc": "/data/ProjectRecord/Tumor/Panel/Pipeline/command/v0.2.0.0/qc/fastq_qc.py",
+    "bamqc": "/data/ProjectRecord/Tumor/Panel/Pipeline/command/v0.2.0.0/qc/bam_qc.py",
+    "mapping": "/data/ProjectRecord/Tumor/Panel/Pipeline/command/v0.2.0.0/mapping/run_mapping.py",
+    "downsample": "/data/ProjectRecord/Tumor/Panel/Pipeline/command/v0.2.0.0/mapping/bam_downsample.py",
+    "rmdup": "/data/ProjectRecord/Tumor/Panel/Pipeline/command/v0.2.0.0/mapping/run_rmdup.py",
+    "indelrealigner": "/data/ProjectRecord/Tumor/Panel/Pipeline/command/v0.2.0.0/mapping/run_indelrealigner.py",
+    "umi": "/data/ProjectRecord/Tumor/Panel/Pipeline/command/v0.2.0.0/umi/run_umi.py",
+    "addRX": "/data/ProjectRecord/Tumor/Panel/Pipeline/command/v0.2.0.0/umi/bam_add_RX.pl",
+    "snvindel": "/data/ProjectRecord/Tumor/Panel/Pipeline/command/v0.2.0.0/caller/run_snvindel_v0.2.0.0.py",
+    "filter_to_pass": "/data/ProjectRecord/Tumor/Panel/Pipeline/command/v0.2.0.0/caller/filter_to_pass.py",
+    "merge_mnp": "/data/ProjectRecord/Tumor/Panel/Pipeline/command/v0.2.0.0/caller/merge_mnp.py",
+    "annotate": "/data/ProjectRecord/Tumor/Panel/Pipeline/command/v0.2.0.0/annotation/run_annotate_v0.2.0.0.py",
+    "diff_T_N_v1": "/data/ProjectRecord/Tumor/Panel/Pipeline/command/v0.2.0.0/annotation/bin/diff_T_N_v1.R",
+    "make_background": "/data/ProjectRecord/Tumor/Panel/Pipeline/command/v0.2.0.0/annotation/bin/make_background.R",
+    "fusion": "/data/ProjectRecord/Tumor/Panel/Pipeline/command/v0.2.0.0/fusion/gridss_fusion_detect_v0.1.0.0.py",
+    "cnv": "/data/ProjectRecord/Tumor/Panel/Pipeline/command/v0.2.0.0/cnv/copy_number_detection_v3.py",
+    "msi": "/data/ProjectRecord/Tumor/Panel/Pipeline/command/v0.2.0.0/msi/run_msi_v0.1.1.0.py"
+  }
+}

@@ -1,0 +1,68 @@
+2021.12.3 update message
+# cutadapt sortware result;
+shell script
+	pip install cutadapt
+	cp -rf /data/software/lib/python3.9/site-packages/cutadapt /data/home/zhounan/mission/KPI_assess_method_detect/deadline_October_pipeline/software/cutadapt-3.4
+	cp /data/home/zhounan/.local/bin/cutadapt /data/home/zhounan/mission/KPI_assess_method_detect/deadline_October_pipeline/software/cutadapt-3.4/cutadapt-3.4
+# whatshap sortware result;
+shell script
+	pip install whatshap
+	cp -rf /data/software/lib/python3.9/site-packages/whatshap /data/home/zhounan/mission/KPI_assess_method_detect/deadline_October_pipeline/software/whatshap-1.1
+	cp /data/home/zhounan/.local/bin/whatshap-1.1 /data/home/zhounan/mission/KPI_assess_method_detect/deadline_October_pipeline/software/whatshap-1.1/whatshap-1.1
+# snv_indel process update to v0.2.0.0 version and add to configure file;
+command/v0.2.0.0/caller directory add "filter_to_pass.py" "merge_mnp.py" "run_snvindel_v0.2.0.0.py" file.
+command/v0.2.0.0/caller directory add vcflib/ python package.
+
+---- finished! ----
+2021.12.6 update message
+# command/v0.2.0.0/configure/parameter_configure_file modify
+cnv = ${version}/cnv/run_cnv.py --> cnv = ${version}/cnv/copy_number_detection_v3.py
+cnv_baseline = ${version}/cnv/baselines_files/NanOnco_Plus_Panel_v2.0_Covered_hg19_cnv_baseline_v3.txt # only used for DaRui
+# command/v0.2.0.0/pipeline/sample_running_darui_new.py modify
+add "cmd_cnv" for YK.P1 and Nad panel.
+add "cmd_var_add_ann" method means combine "cmd_snv_indel" and "cmd_annotation".
+command/v0.2.0.0/caller directory add "run_annotate_v0.2.0.0.py" file.
+
+---- finished! ----
+2021.12.7 update message
+# command/v0.2.0.0/msi directory add "run_msi_v0.1.1.0.py" file.
+run_msi_v0.1.1.0.py add --cfg_json parameter, used to load "msisensor-pro" software path
+pip install plotly used for drawing msi result plot.
+# command/v0.2.0.0/configure/parameter_configure_file modify
+software add msisensor-pro path.
+run_msi.py update run_msi_v0.1.1.0.py
+
+---- finished! ----
+2021.12.11 update message
+# command/v0.2.0.0/pipeline/sampleonly_running_v0.2.0.0.py modify
+add fusion process, install "gridss" software.
+add running_step.
+
+---- finished! ----
+2021.12.15 update message
+# command/v0.2.0.0/fusion add gridss_fusion_detect_0.1.0.0.py script
+# command/v0.2.0.0/core/brc.py change name to bac.py
+modify resolveConfig and versions method
+line 110 is "(parameter, value) = re.split(r"\s*=+\s*", line)", line 125 is "def versions(directory, keystring='cfg'):"
+# all scripts change the "--cfg_json" parameter
+# all scripts change the "brc" package name to "bac" package name
+# command/v0.2.0.0/configure directory "parameter_configure_file" file name change to "cfg_version"
+
+
+---- finished! ----
+2021.12.28 update message
+# command/v0.2.0.0/fusion add run_fusion_gridss_v0.2.1.0.py script
+add function:
+annovar annotation 
+get hotspot pair gene result
+
+
+---- finished! ----
+2022.1.5 update message
+# command/v0.2.0.0/umi run_umi.py script modify
+"GroupReadsByUmi" step "--edits" parameter 0 ==> 1
+"CallMolecularConsensusReads" and "CallDuplexConsensusReads" step "--min-input-base-quality" parameter 30 ==> 20
+
+
+---- finished! ----
+
